@@ -1,29 +1,79 @@
 .navbar {
-  height: 50px;
-  background-color: #003580;
+  height: 70px;
+  background: linear-gradient(to right, #003580, #004999);
   display: flex;
   justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  top: 0;
+  z-index: 1000;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
 }
 
 .navContainer {
   width: 100%;
-  max-width: 1024px;
-  color: wheat;
+  max-width: 1200px;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 20px;
 }
 
 .logo {
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+.logo:hover {
+  color: #febb02;
+  transform: scale(1.02);
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .navButton {
-  margin-left: 20px;
+  padding: 10px 25px;
   border: none;
-  padding: 5px 10px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.navButton:first-child {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.navButton:last-child {
+  background-color: #febb02;
   color: #003580;
-  border-radius: 5px;
-  cursor: pointer;
+}
+
+.navButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navButton:first-child:hover {
+  background-color: white;
+  color: #003580;
+}
+
+.navButton:last-child:hover {
+  background-color: #fdc934;
 }

@@ -1,7 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./header.css";
-import "react-date-range/dist/styles.css"; // main style file
-import "react-date-range/dist/theme/default.css"; // theme css file
 import {
   faBed,
   faCalendarDays,
@@ -10,44 +6,45 @@ import {
   faPlane,
   faTaxi,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./header.css";
 import { DateRange } from "react-date-range";
-import { format } from "date-fns"; // Add this import at the top
-
 import { useState } from "react";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
-function Header({ type }) {
+const Header = ({ type }) => {
+  const [destination, setDestination] = useState("");
+  const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState([
     {
       startDate: new Date(),
-      endDate: new Date(), // Changed from null to new Date()
+      endDate: new Date(),
       key: "selection",
     },
   ]);
-
-  // Add state for calendar visibility
-  const [openDate, setOpenDate] = useState(false);
-
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
     adult: 1,
     children: 0,
     room: 1,
   });
+
+  const navigate = useNavigate();
+
   const handleOption = (name, operation) => {
     setOptions((prev) => {
-      // Prevent decrementing below 0 for children, below 1 for adults and rooms
-      const minValue = name === "children" ? 0 : 1;
-
-      // Return previous state if trying to decrement below minimum
-      if (operation === "d" && prev[name] <= minValue) {
-        return prev;
-      }
-
       return {
         ...prev,
-        [name]: operation === "i" ? prev[name] + 1 : prev[name] - 1,
+        [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
       };
     });
+  };
+
+  const handleSearch = () => {
+    navigate("/hotels", { state: { destination, date, options } });
   };
 
   return (
@@ -68,7 +65,7 @@ function Header({ type }) {
           </div>
           <div className="headerListItem">
             <FontAwesomeIcon icon={faCar} />
-            <span>Car Rentals</span>
+            <span>Car rentals</span>
           </div>
           <div className="headerListItem">
             <FontAwesomeIcon icon={faBed} />
@@ -76,17 +73,17 @@ function Header({ type }) {
           </div>
           <div className="headerListItem">
             <FontAwesomeIcon icon={faTaxi} />
-            <span>Airport Taxis</span>
+            <span>Airport taxis</span>
           </div>
         </div>
         {type !== "list" && (
           <>
             <h1 className="headerTitle">
-              A lifetime of discounts? It&apos;s Genius
+              A lifetime of discounts? It&apos;s Genius.
             </h1>
             <p className="headerDesc">
-              Get rewarded for you travels - unlock instant savings of 10% or
-              more with a free Rv Booking Account
+              Get rewarded for your travels – unlock instant savings of 10% or
+              more with a free Lamabooking account
             </p>
             <button className="headerBtn">Sign in / Register</button>
             <div className="headerSearch">
@@ -96,6 +93,7 @@ function Header({ type }) {
                   type="text"
                   placeholder="Where are you going?"
                   className="headerSearchInput"
+                  onChange={(e) => setDestination(e.target.value)}
                 />
               </div>
               <div className="headerSearchItem">
@@ -103,12 +101,10 @@ function Header({ type }) {
                 <span
                   onClick={() => setOpenDate(!openDate)}
                   className="headerSearchText"
-                >
-                  {`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
-                    date[0].endDate,
-                    "MM/dd/yyyy"
-                  )}`}
-                </span>
+                >{`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
+                  date[0].endDate,
+                  "MM/dd/yyyy"
+                )}`}</span>
                 {openDate && (
                   <DateRange
                     editableDateInputs={true}
@@ -116,7 +112,7 @@ function Header({ type }) {
                     moveRangeOnFirstSelection={false}
                     ranges={date}
                     className="date"
-                    minDate={new Date()} // This ensures only future dates are selectable
+                    minDate={new Date()}
                   />
                 )}
               </div>
@@ -125,13 +121,14 @@ function Header({ type }) {
                 <span
                   onClick={() => setOpenOptions(!openOptions)}
                   className="headerSearchText"
-                >{`${options.adult} adult . ${options.children} children. ${options.room} room`}</span>
+                >{`${options.adult} adult · ${options.children} children · ${options.room} room`}</span>
                 {openOptions && (
                   <div className="options">
                     <div className="optionItem">
-                      <span>Adult</span>
+                      <span className="optionText">Adult</span>
                       <div className="optionCounter">
                         <button
+                          disabled={options.adult <= 1}
                           className="optionCounterButton"
                           onClick={() => handleOption("adult", "d")}
                         >
@@ -149,9 +146,10 @@ function Header({ type }) {
                       </div>
                     </div>
                     <div className="optionItem">
-                      <span>Children</span>
+                      <span className="optionText">Children</span>
                       <div className="optionCounter">
                         <button
+                          disabled={options.children <= 0}
                           className="optionCounterButton"
                           onClick={() => handleOption("children", "d")}
                         >
@@ -169,9 +167,10 @@ function Header({ type }) {
                       </div>
                     </div>
                     <div className="optionItem">
-                      <span>Room</span>
+                      <span className="optionText">Room</span>
                       <div className="optionCounter">
                         <button
+                          disabled={options.room <= 1}
                           className="optionCounterButton"
                           onClick={() => handleOption("room", "d")}
                         >
@@ -192,7 +191,9 @@ function Header({ type }) {
                 )}
               </div>
               <div className="headerSearchItem">
-                <button className="headerBtn">Search</button>
+                <button className="headerBtn" onClick={handleSearch}>
+                  Search
+                </button>
               </div>
             </div>
           </>
@@ -200,6 +201,6 @@ function Header({ type }) {
       </div>
     </div>
   );
-}
+};
 
 export default Header;
