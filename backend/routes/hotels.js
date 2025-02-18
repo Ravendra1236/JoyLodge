@@ -1,86 +1,27 @@
 import express from "express";
-import Hotel from "../models/hotel.model.js";
-import { createError } from "../utils/error.js";
+
+import {
+  createHotel,
+  deleteHotel,
+  getHotel,
+  getHotels,
+  updateHotel,
+} from "../controllers/hotel.controller.js";
 const router = express.Router();
 
 // Create :
-router.post("/", async (req, res) => {
-  const newHotel = new Hotel(req.body);
-
-  try {
-    const savedHotel = await newHotel.save();
-    res.status(200).json({
-      savedHotel,
-      mssg: "Successfully saved",
-    });
-  } catch (error) {
-    res.status(500).json({
-      mssg: error,
-    });
-  }
-});
+router.post("/", createHotel);
 
 // Update :
-router.patch("/:id", async (req, res) => {
-  try {
-    const updatedHotel = await Hotel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-    res.status(200).json({
-      updatedHotel,
-      mssg: "Successfully Updated",
-    });
-  } catch (error) {
-    res.status(500).json({
-      mssg: error,
-    });
-  }
-});
+router.patch("/:id", updateHotel);
 
 // Delete :
-router.delete("/:id", async (req, res) => {
-  try {
-    const updatedHotel = await Hotel.findByIdAndDelete(req.params.id);
-    res.status(200).json({
-      mssg: "Successfully Deleted",
-    });
-  } catch (error) {
-    res.status(500).json({
-      mssg: error,
-    });
-  }
-});
+router.delete("/:id", deleteHotel);
 
 //  Get All Hotels:
-router.get("/", async (req, res, next) => {
-  try {
-    const hotels = await Hotel.find();
-    res.status(200).json({
-      hotels,
-      mssg: "Successfull",
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+router.get("/", getHotels);
 
 //  Get A single Hotel :
-router.get("/:id", async (req, res) => {
-  try {
-    const hotel = await Hotel.findById(req.params.id);
-    res.status(200).json({
-      hotel,
-      mssg: "Successfull",
-    });
-  } catch (error) {
-    res.status(500).json({
-      mssg: error,
-    });
-  }
-});
+router.get("/:id", getHotel);
 
 export default router;
