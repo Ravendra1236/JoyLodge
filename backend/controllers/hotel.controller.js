@@ -6,12 +6,12 @@ export const createHotel = async (req, res, next) => {
 
   try {
     const savedHotel = await newHotel.save();
-    res.status(200).json({
+    res.status(201).json({
       savedHotel,
       mssg: "Successfully saved",
     });
   } catch (error) {
-    next(createError(404, "Something went wrong"));
+    next(createError(500, "Error creating hotel"));
   }
 };
 
@@ -29,7 +29,7 @@ export const updateHotel = async (req, res, next) => {
       mssg: "Successfully Updated",
     });
   } catch (error) {
-    next(createError(404, "Something went wrong!"));
+    next(createError(500, "Error updating hotel"));
   }
 };
 
@@ -59,11 +59,12 @@ export const getHotels = async (req, res, next) => {
 export const getHotel = async (req, res, next) => {
   try {
     const hotel = await Hotel.findById(req.params.id);
+    if (!hotel) return next(createError(404, "Hotel not found"));
     res.status(200).json({
       hotel,
-      mssg: "Successfull",
+      mssg: "Successful",
     });
   } catch (error) {
-    next(createError(500, "Something went wrong"));
+    next(createError(500, "Error fetching hotel"));
   }
 };
